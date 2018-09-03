@@ -23,7 +23,8 @@
 !*LICENSE
 !*Makefile
 
-# Blacklist the following files
-/lib
-/A1/data
+# Blacklist the following file / directory names
+lib
+data
 target
+.metadata
