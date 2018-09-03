@@ -1,6 +1,6 @@
 package T1753A1;
 
-//import org.apache.lucene;
+import org.apache.lucene.analysis.Analyzer;
 
 /**
  * Hello world!
