@@ -20,3 +20,13 @@ mvn install:install-file \
 	-DgroupId=cs.unh.trec-car-tools \
 	-DartifactId=trec-car-tools \
 	-Dversion=15 -Dpackaging=jar
+
+# Download the test data
+if [ ! -e test200.flag ]; then
+	mkdir -p data
+	cd data/
+	wget -nc http://trec-car.cs.unh.edu/datareleases/v2.0/test200.v2.0.tar.xz
+	tar -xzvf test200.v2.0.tar.xz
+	cd ..
+	touch test200.flag
+fi
