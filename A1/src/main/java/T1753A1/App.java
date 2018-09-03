@@ -1,4 +1,6 @@
-package p753T1A1;
+package T1753A1;
+
+//import org.apache.lucene;
 
 /**
  * Hello world!
@@ -8,6 +10,6 @@ public class App
 {
 	public static void main(String[] args)
 	{
-		//System.out.println("Hello World!");
+		System.out.println("Hello World!");
 	}
 }

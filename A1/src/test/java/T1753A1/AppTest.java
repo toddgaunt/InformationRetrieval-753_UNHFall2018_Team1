@@ -1,4 +1,4 @@
-package 753T1A1;
+package T1753A1;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

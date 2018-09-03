@@ -7,4 +7,4 @@ if [[ "$1" == "" ]]; then
 	exit 1 
 fi
 
-mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DgroupId=753T1$NAME -DartifactId=$NAME
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DgroupId=cs753.T1.$NAME -DartifactId=$NAME
