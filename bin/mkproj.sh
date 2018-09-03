@@ -2,7 +2,7 @@
 
 NAME=$1
 
-if [[ "$1" == "" ]]
+if [[ "$1" == "" ]]; then
 	echo "mkproj <project-name>"
 	exit 1 
 fi
