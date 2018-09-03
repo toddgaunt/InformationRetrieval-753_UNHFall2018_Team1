@@ -1,5 +1,15 @@
 External libraries, such as lucene, should be installed to the top-level lib/
-directory. This will allow all assignments to share the libraries.
+directory. This will allow all assignments to share the libraries. If possible,
+please automated the downloading and unpacking of libraries inside the 'setup'
+script.
 
-Each assignment gets its own IDEA project, created in a naming scheme of
-A{1..99}. For example, the first homework resides in the A1/ directory.
+Each assignment gets its own maven project, created in a naming scheme of
+A{1..99}. For example, the first homework resides in the A1/ directory. In
+each of these projects, a setup.sh can be found for installing and configuring
+project dependencies. To compile the source code, use the command `mvm compile`
+
+For first time setup:
+	- install maven on your computer
+	- run the top-level setup.sh
+	- cd into A1 and run setup.sh
+	- There you go!
