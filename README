@@ -1,0 +1,5 @@
+External libraries, such as lucene, should be installed to the top-level lib/
+directory. This will allow all assignments to share the libraries.
+
+Each assignment gets its own IDEA project, created in a naming scheme of
+A{1..99}. For example, the first homework resides in the A1/ directory.
