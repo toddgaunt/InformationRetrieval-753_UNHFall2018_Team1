@@ -27,10 +27,6 @@ import org.apache.lucene.util.Version;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
 	public static void main(String[] args)
