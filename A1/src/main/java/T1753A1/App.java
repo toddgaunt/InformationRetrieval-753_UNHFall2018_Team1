@@ -17,7 +17,9 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -56,11 +58,14 @@ public class App
 				iwriter.addDocument(doc);
 			}
 			iwriter.close();
-			System.out.println("foo");
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(indexDir));
 			QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-			System.out.println("bar");
+			TopDocs results = is.search(parser.parse("power nap benefits"), 10);
+			
+			/* TODO(todd): Modify this to print out a list of the results */
+			System.out.println(results);
+			/* End TODO */
 		} catch (Exception e) {
 			System.out.println(e);
 		}
