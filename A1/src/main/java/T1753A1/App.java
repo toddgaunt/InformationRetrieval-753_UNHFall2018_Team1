@@ -31,6 +31,27 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
 public class App 
 {
+	public static void printQuery(IndexSearcher is, String query) {
+		try {
+		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+		TopDocs results;
+		ScoreDoc[] hits;
+		
+		/* Perform the first query */
+		results = is.search(parser.parse(query), 10);
+		hits = results.scoreDocs;
+		System.out.println("Begin: '" + query + "'");
+		for (ScoreDoc hit: hits) {
+			Document doc = is.doc(hit.doc);
+			System.out.println(doc.get("id"));
+			System.out.println(doc.get("text"));
+		}
+		System.out.println("End '" + query +"'");
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		try {
@@ -52,43 +73,12 @@ public class App
 			}
 			iwriter.close();
 			/* Use the index */
-			IndexSearcher is = new IndexSearcher(DirectoryReader.open(indexDir));
-			QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-			TopDocs results;
-			ScoreDoc[] hits;
+			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
 			
-			/* Perform the first query */
-			Query query1 = parser.parse("text: power text: nap text: benefits");
-			results = is.search(query1, 10);
-			hits = results.scoreDocs;
-			System.out.println("Begin Q1: power nap benefits");
-			for (ScoreDoc hit: hits) {
-				Document doc = is.doc(hit.doc);
-				System.out.println(doc.get("id"));
-			}
-			System.out.println("End Q1");
-			
-			/* Perform the second query */
-			Query query2 = parser.parse("text: whale text: vocalization text: production text: of text: sound");
-			results = is.search(query2, 10);
-			hits = results.scoreDocs;
-			System.out.println("Begin Q2: whale vocalization production of sound");
-			for (ScoreDoc hit: hits) {
-				Document doc = is.doc(hit.doc);
-				System.out.println(doc.get("id"));
-			}
-			System.out.println("End Q2");
-
-			/* Perform the third query */
-			Query query3 = parser.parse("text: pokemon text: puzzle text: league");
-			results = is.search(query3, 10);
-			hits = results.scoreDocs;
-			System.out.println("Begin Q3: pokemon puzzle league");
-			for (ScoreDoc hit: hits) {
-				Document doc = is.doc(hit.doc);
-				System.out.println(doc.get("id"));
-			}
-			System.out.println("End Q3");
+			printQuery(is, "text: power text: nap text: benefits");
+			printQuery(is, "text: whale text: vocalization text: production text: of text: sound");
+			printQuery(is, "text: pokemon text: puzzle text: league");
+			printQuery(is, "text: nap");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
