@@ -6,8 +6,10 @@ all:
 clean:
 	mvn clean
 
-run:
+run: all
+	rm -rf index/
 	mvn exec:java -Dexec.mainClass="T1753A1.App"
 
-run-windows:
+run-windows: all
+	rm -rf index/
 	mvn exec:java -D"exec.mainClass"="T1753A1.App"
