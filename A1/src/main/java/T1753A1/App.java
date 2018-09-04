@@ -19,6 +19,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -57,11 +58,21 @@ public class App
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(indexDir));
 			QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-			TopDocs results = is.search(parser.parse("power nap benefits"), 10);
+			TopDocs results;
+			ScoreDoc[] hits;
 			
-			/* TODO(todd): Modify this to print out a list of the results */
-			System.out.println(results);
-			/* End TODO */
+			/* Perform the first query */
+			results = is.search(parser.parse("text: power text: nap text: benefits"), 10);
+			hits = results.scoreDocs;
+			System.out.println("Begin Q1: power nap benefits");
+			for (ScoreDoc hit: hits) {
+				Document doc = is.doc(hit.doc);
+				System.out.println(doc.get("id"));
+			}
+			System.out.println("End Q1");
+			/* TODO(todd): Perform the second query */
+			
+			/* TODO(todd): Perform third query */
 		} catch (Exception e) {
 			System.out.println(e);
 		}
