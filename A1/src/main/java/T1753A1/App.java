@@ -78,7 +78,6 @@ public class App
 			printQuery(is, "text: power text: nap text: benefits");
 			printQuery(is, "text: whale text: vocalization text: production text: of text: sound");
 			printQuery(is, "text: pokemon text: puzzle text: league");
-			printQuery(is, "text: nap");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
