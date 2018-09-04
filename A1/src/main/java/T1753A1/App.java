@@ -33,14 +33,9 @@ public class App
 	public static void main(String[] args)
 	{
 		try {
-			//if (args.length != 2) {
-			//	System.out.println("Usage: A1 <document to index>");
-			//	return;
-			//}
-			//String dataFile = args[1];
 			String dataFile = "data/test200/test200-train/fold-0-train.pages.cbor-paragraphs.cbor";
-			/* Setup the indexer */
 			
+			/* Setup the indexer */
 			Directory indexDir = FSDirectory.open(new File("index").toPath());
 			IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 			IndexWriter iwriter = new IndexWriter(indexDir, config);
