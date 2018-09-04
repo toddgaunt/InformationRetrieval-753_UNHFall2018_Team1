@@ -5,3 +5,9 @@ all:
 
 clean:
 	mvn clean
+
+run:
+	mvn exec:java -Dexec.mainClass="T1753A1.App"
+
+run-windows:
+	mvn exec:java -D"exec.mainClass"="T1753A1.App"
