@@ -60,7 +60,7 @@ public class App
 		for (ScoreDoc hit: hits) {
 			Document doc = is.doc(hit.doc);
 			ret += pageID;
-			ret += " QO ";
+			ret += " 0";
 			ret += " " + doc.get("id");
 			ret += " " + rank;
 			ret += " " + hit.score;
@@ -113,7 +113,7 @@ public class App
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
 			
-			PrintWriter outfile = new PrintWriter(methodName + ".txt", "UTF-8");
+			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
 				outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
