@@ -38,7 +38,7 @@ public class App
 		String ret = "";
 		SimilarityBase customSim = new SimilarityBase() {;
 			protected float score(BasicStats stats, float freq, float doclen) {
-				return 0.0f;
+				return freq;//Term-frequency
 			}
 
 			@Override
