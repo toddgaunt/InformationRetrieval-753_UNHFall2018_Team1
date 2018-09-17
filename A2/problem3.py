@@ -10,6 +10,8 @@ def compute_p_at_r(qrel_name, results_name):
     qrel = {};
     queries = {};
 
+    # Add queries, and count relevant results
+
     with open(qrel_name, "r") as fp:
         for line in fp:
             words = line.split()
@@ -19,11 +21,15 @@ def compute_p_at_r(qrel_name, results_name):
             else:
                 queries[words[0]]["R"] += 1;
 
+    # Count how many results per query are relevant results
+
     with open(results_name, "r") as fp:
         for line in fp:
             words = line.split()
             if (words[0], words[2]) in qrel:
                 queries[words[0]]["results"] += 1
+
+    # Compute the Precision @ R for each query
 
     p_at_r = {}
 
@@ -31,6 +37,8 @@ def compute_p_at_r(qrel_name, results_name):
         results = queries[query]["results"]
         R = queries[query]["R"];
         p_at_r[query] = float(results) / float(R)
+
+    # Compute the mean Precision @ R
 
     mean = 0.0
     for k in p_at_r:
