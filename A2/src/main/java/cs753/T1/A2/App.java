@@ -3,8 +3,6 @@ package cs753.T1.A2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.util.List;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -119,7 +117,6 @@ public class App
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
 				outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
 			}
-			outfile.println();
 			fp_outline.close();
 			outfile.close();
     	} catch (Exception e) {
