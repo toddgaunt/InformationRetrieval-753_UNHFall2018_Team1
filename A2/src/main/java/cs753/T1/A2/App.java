@@ -58,7 +58,7 @@ public class App
 		for (ScoreDoc hit: hits) {
 			Document doc = is.doc(hit.doc);
 			ret += pageID;
-			ret += " 0";
+			ret += " Q0";
 			ret += " " + doc.get("id");
 			ret += " " + rank;
 			ret += " " + hit.score;
