@@ -110,6 +110,7 @@ public class App
 				iwriter.addDocument(doc);
 			}
 			iwriter.close();
+			fp_para.close();
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
 			
@@ -120,6 +121,7 @@ public class App
 			}
 			outfile.println();
 			fp_outline.close();
+			outfile.close();
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
