@@ -1,0 +1,13 @@
+Commands for Q2
+
+Precision at R:
+./trec_eval -q -m Rprec train.pages.cbor-article.qrels default.runfile > default.Rprec.out
+./trec_eval -q -m Rprec train.pages.cbor-article.qrels custom.runfile > custom.Rprec.out
+
+Mean-average precision:
+./trec_eval -q -m map train.pages.cbor-article.qrels default.runfile > default.map.out
+./trec_eval -q -m map train.pages.cbor-article.qrels custom.runfile > custom.map.out
+
+NDCG@20:
+./trec_eval -q -m all_trec train.pages.cbor-article.qrels default.runfile | grep -w "ndcg_cut_20" > default.ndcg20.out
+./trec_eval -q -m all_trec train.pages.cbor-article.qrels custom.runfile | grep -w "ndcg_cut_20" > custom.ndcg20.out
