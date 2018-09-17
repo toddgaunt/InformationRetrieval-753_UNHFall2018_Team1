@@ -15,35 +15,29 @@ def compute_p_at_r(qrel_name, results_name):
             words = line.split()
             qrel[(words[0], words[2])] = int(words[3])
             if words[0] not in queries:
-                queries[words[0]] = gen_query(0, 0);
+                queries[words[0]] = gen_query(0, 1);
             else:
                 queries[words[0]]["R"] += 1;
 
     with open(results_name, "r") as fp:
         for line in fp:
             words = line.split()
-            if words[0] in queries:
-                if (words[0], words[2]) in qrel:
-                    queries[words[0]]["results"] += 1
-            else:
-                queries[words[0]] = gen_query(0, 0);
-                if (words[0], words[2]) in qrel:
-                    queries[words[0]]["results"] += 1
+            if (words[0], words[2]) in qrel:
+                queries[words[0]]["results"] += 1
 
     p_at_r = {}
 
     for query in queries:
+        results = queries[query]["results"]
         R = queries[query]["R"];
-        if R == 0:
-            p_at_r[query] = 0.0
-        else:
-            p_at_r[query] = float(queries[query]["results"]) / float(R)
+        p_at_r[query] = float(results) / float(R)
 
-    mean = 0
+    mean = 0.0
     for k in p_at_r:
+        print(k + ": " + str(p_at_r[k]))
         mean += p_at_r[k]
 
-    mean /= len(p_at_r)
+    mean = mean / float(len(p_at_r))
     print(results_name)
     print("Rprec: " + str(mean))
 
