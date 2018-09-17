@@ -10,43 +10,36 @@ def compute_p_at_r(qrel_name, results_name):
     qrel = {};
     queries = {};
 
-    qrel_fp = open(qrel_name, "r");
-    results_fp = open(results_name, "r");
-
-    for line in qrel_fp:
-        words = line.split()
-        qrel[(words[0], words[2])] = int(words[3])
-
-    for line in results_fp:
-        words = line.split()
-        if words[0] in queries:
-            if (words[0], words[2]) in qrel and qrel[(words[0], words[2])] == 1:
-                queries[words[0]]["results"].append(1)
-                queries[words[0]]["R"] += 1
+    with open(qrel_name, "r") as fp:
+        for line in fp:
+            words = line.split()
+            qrel[(words[0], words[2])] = int(words[3])
+            if words[0] not in queries:
+                queries[words[0]] = gen_query([], 0);
             else:
-                queries[words[0]]["results"].append(0)
-        else:
-            queries[words[0]] = gen_query([], 0);
-            if (words[0], words[2]) in qrel and qrel[(words[0], words[2])] == 1:
-                queries[words[0]]["results"].append(1)
-                queries[words[0]]["R"] += 1
+                queries[words[0]]["R"] += 1;
+
+    with open(results_name, "r") as fp:
+        for line in fp:
+            words = line.split()
+            if words[0] in queries:
+                if (words[0], words[2]) not in qrel:
+                    qrel[(words[0], words[2])] = 0
+                queries[words[0]]["results"].append(qrel[(words[0], words[2])])
             else:
-                queries[words[0]]["results"].append(0)
+                queries[words[0]] = gen_query([], 0);
+                if (words[0], words[2]) not in qrel:
+                    qrel[(words[0], words[2])] = 0
+                queries[words[0]]["results"].append(qrel[(words[0], words[2])])
 
     p_at_r = {}
 
     for query in queries:
-        tp = 0;
-        fp = 0;
-        for i in range(queries[query]["R"]):
-            if (queries[query]["results"][i] == 1):
-                tp += 1
-            else:
-                fp += 1
-        if (tp == 0 and fp == 0):
-            p_at_r[query] = 0
+        R = queries[query]["R"];
+        if R == 0:
+            p_at_r[query] = 0.0
         else:
-            p_at_r[query] = tp / (tp + fp)
+            p_at_r[query] = float(sum(queries[query]["results"])) / float(R)
 
     mean = 0
     for k in p_at_r:
@@ -54,7 +47,7 @@ def compute_p_at_r(qrel_name, results_name):
 
     mean /= len(p_at_r)
     print(results_name)
-    print("RPrec: " + str(mean))
+    print("Rprec: " + str(mean))
 
 if (len(sys.argv) != 4):
     print("problem2.py <qrel> <default.runfile> <custom.runfile>")
