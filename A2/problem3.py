@@ -15,7 +15,7 @@ def compute_p_at_r(qrel_name, results_name):
             words = line.split()
             qrel[(words[0], words[2])] = int(words[3])
             if words[0] not in queries:
-                queries[words[0]] = gen_query([], 0);
+                queries[words[0]] = gen_query(0, 0);
             else:
                 queries[words[0]]["R"] += 1;
 
@@ -23,14 +23,12 @@ def compute_p_at_r(qrel_name, results_name):
         for line in fp:
             words = line.split()
             if words[0] in queries:
-                if (words[0], words[2]) not in qrel:
-                    qrel[(words[0], words[2])] = 0
-                queries[words[0]]["results"].append(qrel[(words[0], words[2])])
+                if (words[0], words[2]) in qrel:
+                    queries[words[0]]["results"] += 1
             else:
-                queries[words[0]] = gen_query([], 0);
-                if (words[0], words[2]) not in qrel:
-                    qrel[(words[0], words[2])] = 0
-                queries[words[0]]["results"].append(qrel[(words[0], words[2])])
+                queries[words[0]] = gen_query(0, 0);
+                if (words[0], words[2]) in qrel:
+                    queries[words[0]]["results"] += 1
 
     p_at_r = {}
 
@@ -39,7 +37,7 @@ def compute_p_at_r(qrel_name, results_name):
         if R == 0:
             p_at_r[query] = 0.0
         else:
-            p_at_r[query] = float(sum(queries[query]["results"])) / float(R)
+            p_at_r[query] = float(queries[query]["results"]) / float(R)
 
     mean = 0
     for k in p_at_r:
