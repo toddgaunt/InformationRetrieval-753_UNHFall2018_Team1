@@ -28,3 +28,6 @@ lib
 data
 target
 .metadata
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
