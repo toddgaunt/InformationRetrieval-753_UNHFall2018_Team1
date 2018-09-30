@@ -34,35 +34,8 @@ public class App
 		System.exit(-1);
 	}
 
-	public static String getQueryRFF(IndexSearcher is, String pageID, String query, TFIDFSimilarity method) throws Exception {
-		int rank = 1;
-		String ret = "";
-
-		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-		TopDocs results;
-		ScoreDoc[] hits;
-
-		is.setSimilarity(method);
-
-		results = is.search(parser.parse(query), 100);
-		hits = results.scoreDocs;
-		for (ScoreDoc hit: hits) {
-			Document doc = is.doc(hit.doc);
-			ret += pageID;
-			ret += " Q0";
-			ret += " " + doc.get("id");
-			ret += " " + rank;
-			ret += " " + hit.score;
-			ret += " team1-default";
-			ret += "\n";
-			rank += 1;
-		}
-		return ret;
-	}
-
-	public static void main(String[] args)
-	{
-		TFIDFSimilarity bnnbnn = new TFIDFSimilarity() {
+	private static TFIDFSimilarity getBnnBnnSim() {
+		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
 				if(freq > 0){
@@ -92,8 +65,10 @@ public class App
 				return 0;
 			}
 		};
-		
-		TFIDFSimilarity ancapc = new TFIDFSimilarity() {
+	}
+
+	private static TFIDFSimilarity getAncApcSim() {
+		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
 				//TODO(todd): Get maximum term frequency from the set of all
@@ -123,7 +98,36 @@ public class App
 				return 0;
 			}
 		};
+	}
 
+	public static String getQueryRFF(IndexSearcher is, String pageID, String query, TFIDFSimilarity method) throws Exception {
+		int rank = 1;
+		String ret = "";
+
+		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+		TopDocs results;
+		ScoreDoc[] hits;
+
+		is.setSimilarity(method);
+
+		results = is.search(parser.parse(query), 100);
+		hits = results.scoreDocs;
+		for (ScoreDoc hit: hits) {
+			Document doc = is.doc(hit.doc);
+			ret += pageID;
+			ret += " Q0";
+			ret += " " + doc.get("id");
+			ret += " " + rank;
+			ret += " " + hit.score;
+			ret += " team1-default";
+			ret += "\n";
+			rank += 1;
+		}
+		return ret;
+	}
+
+	public static void main(String[] args)
+	{
 		try {
 			String dataFile;
 			String outlineFile;
@@ -139,9 +143,9 @@ public class App
 				//TODO(Andrew)
 				//method = lncltn;
 			} else if (methodName.equals("bnn.bnn")) {
-				method = bnnbnn;
+				method = getBnnBnnSim();
 			} else if (methodName.equals("anc.apc")) { 
-				method = ancapc;
+				method = getAncApcSim();
 			} else {
 				usage();
 			}
