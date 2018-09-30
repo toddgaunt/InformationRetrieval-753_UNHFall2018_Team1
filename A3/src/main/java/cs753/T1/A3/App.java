@@ -17,11 +17,14 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;
+import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
+import org.apache.lucene.util.BytesRef;
 
 public class App 
 {
@@ -44,6 +47,42 @@ public class App
 				return "Custom";
 			}
 		};
+
+        //////////////////////////
+        //TF-IDF bnn.bnn
+        /////////////////////////
+        TFIDFSimilarity tfidfSimilarity_bnnbnn = new TFIDFSimilarity() {
+            @Override
+            public float tf(float freq) {
+                float tf = (float) Math.sqrt(freq);
+                if(tf > 0){
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+
+            @Override
+            public float idf(long docFreq, long docCount) {
+                return 1;
+            }
+
+            @Override
+            public float lengthNorm(int length) {
+                return length;
+            }
+
+            @Override
+            public float sloppyFreq(int distance) {
+                return 0;
+            }
+
+            @Override
+            public float scorePayload(int doc, int start, int end, BytesRef payload) {
+                return 0;
+            }
+        };
+
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
