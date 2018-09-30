@@ -30,101 +30,20 @@ public class App
 {
 	public static void usage()
 	{
-		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines METHOD=<default|custom>");
+		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines METHOD=<lnc.ltn|bnn.bnn|anc.apc>");
 		System.exit(-1);
 	}
-	
-	public static String getQueryRFF(IndexSearcher is, String pageID, String query, int method) throws Exception {
+
+	public static String getQueryRFF(IndexSearcher is, String pageID, String query, TFIDFSimilarity method) throws Exception {
 		int rank = 1;
 		String ret = "";
-		SimilarityBase customSim = new SimilarityBase() {;
-			protected float score(BasicStats stats, float freq, float doclen) {
-				return freq;//Term-frequency
-			}
-
-			@Override
-			public String toString() {
-				return "Custom";
-			}
-		};
-
-        //////////////////////////
-        //TF-IDF bnn.bnn
-        /////////////////////////
-        TFIDFSimilarity tfidfSimilarity_bnnbnn = new TFIDFSimilarity() {
-            @Override
-            public float tf(float freq) {
-                if(freq > 0){
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-
-            @Override
-            public float idf(long docFreq, long docCount) {
-                return docFreq;
-            }
-
-            @Override
-            public float lengthNorm(int length) {
-                return length;
-            }
-
-            @Override
-            public float sloppyFreq(int distance) {
-                return 0;
-            }
-
-            @Override
-            public float scorePayload(int doc, int start, int end, BytesRef payload) {
-                return 0;
-            }
-        };
-
-        //////////////////////////
-        //TF-IDF anc.apc
-        /////////////////////////
-        TFIDFSimilarity tfidfSimilarity_ancapc = new TFIDFSimilarity() {
-            @Override
-            public float tf(float freq) {
-				//TODO(todd): Get maximum term frequency from the set of all
-				// documents
-				float max = 1;
-				return 0.5f + (0.5f * freq / max);
-            }
-
-            @Override
-            public float idf(long docFreq, long docCount) {
-                return docFreq;
-            }
-
-            @Override
-            public float lengthNorm(int length) {
-				//TODO(todd)
-				return 0;
-            }
-
-            @Override
-            public float sloppyFreq(int distance) {
-                return 0;
-            }
-
-            @Override
-            public float scorePayload(int doc, int start, int end, BytesRef payload) {
-                return 0;
-            }
-        };
-
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
 		ScoreDoc[] hits;
-		
-		if (1 == method) {
-			is.setSimilarity(customSim);
-		}
-		
+
+		is.setSimilarity(method);
+
 		results = is.search(parser.parse(query), 100);
 		hits = results.scoreDocs;
 		for (ScoreDoc hit: hits) {
@@ -134,43 +53,104 @@ public class App
 			ret += " " + doc.get("id");
 			ret += " " + rank;
 			ret += " " + hit.score;
-			if (1 == method) {
-				ret += " team1-custom";
-			} else {
-				ret += " team1-default";
-			}
+			ret += " team1-default";
 			ret += "\n";
 			rank += 1;
 		}
 		return ret;
 	}
 
-    public static void main(String[] args)
-    {
-    	try {
+	public static void main(String[] args)
+	{
+		TFIDFSimilarity bnnbnn = new TFIDFSimilarity() {
+			@Override
+			public float tf(float freq) {
+				if(freq > 0){
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+
+			@Override
+			public float idf(long docFreq, long docCount) {
+				return docFreq;
+			}
+
+			@Override
+			public float lengthNorm(int length) {
+				return length;
+			}
+
+			@Override
+			public float sloppyFreq(int distance) {
+				return 0;
+			}
+
+			@Override
+			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+				return 0;
+			}
+		};
+		
+		TFIDFSimilarity ancapc = new TFIDFSimilarity() {
+			@Override
+			public float tf(float freq) {
+				//TODO(todd): Get maximum term frequency from the set of all
+				// documents
+				float max = 1;
+				return 0.5f + (0.5f * freq / max);
+			}
+
+			@Override
+			public float idf(long docFreq, long docCount) {
+				return docFreq;
+			}
+
+			@Override
+			public float lengthNorm(int length) {
+				//TODO(todd)
+				return 0;
+			}
+
+			@Override
+			public float sloppyFreq(int distance) {
+				return 0;
+			}
+
+			@Override
+			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+				return 0;
+			}
+		};
+
+		try {
 			String dataFile;
 			String outlineFile;
 			String methodName;
-			int method = 0;
+			TFIDFSimilarity method = null;
 
 			if (args.length != 3)
 				usage();
 			dataFile = args[0];
 			outlineFile = args[1];
 			methodName = args[2];
-			if (methodName.equals("default")) {
-				method = 0;
-			} else if (methodName.equals("custom")) {
-				method = 1;
+			if (methodName.equals("lnc.ltn")) {
+				//TODO(Andrew)
+				//method = lncltn;
+			} else if (methodName.equals("bnn.bnn")) {
+				method = bnnbnn;
+			} else if (methodName.equals("anc.apc")) { 
+				method = ancapc;
 			} else {
 				usage();
 			}
-			
+
 			/* Setup the indexer */
 			Directory indexDir = FSDirectory.open(new File("index").toPath());
 			IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
 			IndexWriter iwriter = new IndexWriter(indexDir, config);
-	
+
 			/* Deserialize the data and add documents to the index */
 			FileInputStream fp_para = new FileInputStream(dataFile);
 			for (Data.Paragraph para : DeserializeData.iterableParagraphs(fp_para)) {
@@ -183,7 +163,7 @@ public class App
 			fp_para.close();
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
-			
+
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
@@ -191,8 +171,8 @@ public class App
 			}
 			fp_outline.close();
 			outfile.close();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
