@@ -82,6 +82,40 @@ public class App
             }
         };
 
+        //////////////////////////
+        //TF-IDF anc.apc
+        /////////////////////////
+        TFIDFSimilarity tfidfSimilarity_ancapc = new TFIDFSimilarity() {
+            @Override
+            public float tf(float freq) {
+				//TODO(todd): Get maximum term frequency from the set of all
+				// documents
+				float max = 1;
+				return 0.5 + (0.5 * freq / max);
+            }
+
+            @Override
+            public float idf(long docFreq, long docCount) {
+                return docFreq;
+            }
+
+            @Override
+            public float lengthNorm(int length) {
+				//TODO(todd)
+				return 0;
+            }
+
+            @Override
+            public float sloppyFreq(int distance) {
+                return 0;
+            }
+
+            @Override
+            public float scorePayload(int doc, int start, int end, BytesRef payload) {
+                return 0;
+            }
+        };
+
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
