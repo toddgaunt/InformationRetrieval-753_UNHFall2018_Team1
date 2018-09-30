@@ -54,8 +54,7 @@ public class App
         TFIDFSimilarity tfidfSimilarity_bnnbnn = new TFIDFSimilarity() {
             @Override
             public float tf(float freq) {
-                float tf = (float) Math.sqrt(freq);
-                if(tf > 0){
+                if(freq > 0){
                     return 1;
                 } else {
                     return 0;
@@ -64,7 +63,7 @@ public class App
 
             @Override
             public float idf(long docFreq, long docCount) {
-                return 1;
+                return docFreq;
             }
 
             @Override
