@@ -91,7 +91,7 @@ public class App
 				//TODO(todd): Get maximum term frequency from the set of all
 				// documents
 				float max = 1;
-				return 0.5 + (0.5 * freq / max);
+				return 0.5f + (0.5f * freq / max);
             }
 
             @Override
