@@ -28,4 +28,4 @@ lib
 data
 target
 .metadata
-.idea*
+*.idea/*
