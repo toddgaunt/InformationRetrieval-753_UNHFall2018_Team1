@@ -82,7 +82,7 @@ public class App
 
 			@Override
 			public float lengthNorm(int length) {
-				return length;
+				return length; // TODO not sure how to implement
 			}
 
 			@Override
@@ -99,7 +99,7 @@ public class App
 
 	private static TFIDFSimilarity getAncApcSim() {
 		return new TFIDFSimilarity() {
-			public IndexReader ir;
+			//public IndexReader ir;  <-- TODO Why is this here Todd? I commented it out.
 			
 			@Override
 			public float tf(float freq) {
@@ -113,8 +113,7 @@ public class App
 
 			@Override
 			public float lengthNorm(int length) {
-				//TODO(todd)
-				return 0;
+				return length; // TODO not sure how to implement
 			}
 
 			@Override
@@ -169,7 +168,6 @@ public class App
 			outlineFile = args[1];
 			methodName = args[2];
 			if (methodName.equals("lnc.ltn")) {
-				//TODO(Andrew)
 				method = getLncLtn();
 			} else if (methodName.equals("bnn.bnn")) {
 				method = getBnnBnnSim();
@@ -196,8 +194,7 @@ public class App
 			fp_para.close();
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
-			
-			getAncApcSim().is = is;
+
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
