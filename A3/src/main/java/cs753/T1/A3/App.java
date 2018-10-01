@@ -44,7 +44,10 @@ public class App
 
 			@Override
 			public float idf(long docFreq, long docCount) {
-				return (float)Math.log10(docCount/docFreq);
+				if(docFreq == 0)
+					return 1;
+				else
+					return (float)Math.log10(docCount/docFreq);
 			}
 
 			@Override
