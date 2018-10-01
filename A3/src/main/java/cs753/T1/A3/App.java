@@ -34,6 +34,35 @@ public class App
 		System.exit(-1);
 	}
 
+	private static TFIDFSimilarity getLncLtn() {
+		return new TFIDFSimilarity() {
+			@Override
+			public float tf(float freq) {
+				return 1 + (float)Math.log10(freq);
+			}
+
+			@Override
+			public float idf(long docFreq, long docCount) {
+				return (float)Math.log10(docCount/docFreq);
+			}
+
+			@Override
+			public float lengthNorm(int length) {
+				return length;
+			}
+
+			@Override
+			public float sloppyFreq(int distance) {
+				return 0;
+			}
+
+			@Override
+			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+				return 0;
+			}
+		};
+	}
+
 	private static TFIDFSimilarity getBnnBnnSim() {
 		return new TFIDFSimilarity() {
 			@Override
@@ -141,7 +170,7 @@ public class App
 			methodName = args[2];
 			if (methodName.equals("lnc.ltn")) {
 				//TODO(Andrew)
-				//method = lncltn;
+				method = getLncLtn();
 			} else if (methodName.equals("bnn.bnn")) {
 				method = getBnnBnnSim();
 			} else if (methodName.equals("anc.apc")) { 
