@@ -9,6 +9,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -98,12 +99,11 @@ public class App
 
 	private static TFIDFSimilarity getAncApcSim() {
 		return new TFIDFSimilarity() {
+			public IndexReader ir;
+			
 			@Override
 			public float tf(float freq) {
-				//TODO(todd): Get maximum term frequency from the set of all
-				// documents
-				float max = 1;
-				return 0.5f + (0.5f * freq / max);
+				return 0.5f + (0.5f * freq / freq);
 			}
 
 			@Override
@@ -196,7 +196,8 @@ public class App
 			fp_para.close();
 			/* Use the index */
 			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
-
+			
+			getAncApcSim().is = is;
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
