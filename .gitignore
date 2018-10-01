@@ -28,4 +28,9 @@ lib
 data
 target
 .metadata
-*.idea/*
+.idea/*
+A1/.idea/*
+A2/.idea/*
+A3/.idea/*
+A4/.idea/*
+A5/.idea/*
