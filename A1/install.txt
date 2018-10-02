@@ -1,0 +1,6 @@
+Your machine needs the data file and jdk1.
+
+1. Clone the following repo: https://github.com/toddgaunt/InformationRetrieval-753_UNHFall2018_Team1.git
+2. "cd" to A1 directory and copy your data file to it.
+3. Execute the following in order to run the compile and run the program: make run INPUT:="FILE/PATH/HERE"
+	-Where FILE/PATH/HERE is the path to the data file. By default it is "./fold-0-train.pages.cbor-paragraphs.cbor"
