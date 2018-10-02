@@ -55,7 +55,7 @@ public class App
 	public static void main(String[] args)
 	{
 		try {
-			String dataFile = "data/test200/test200-train/fold-0-train.pages.cbor-paragraphs.cbor";
+			String dataFile = args[0];
 			
 			/* Setup the indexer */
 			Directory indexDir = FSDirectory.open(new File("index").toPath());
