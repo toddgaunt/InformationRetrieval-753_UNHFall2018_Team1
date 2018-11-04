@@ -42,14 +42,14 @@ public class App
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
-				return null;
+				return "U-L";
 			}
 
 			@Override
 			protected float score(BasicStats stats, float freq, float docLen) {
-				// TODO Auto-generated method stub
-				return 0;
+				long tf = stats.getTotalTermFreq();
+				long nd = stats.getNumberOfDocuments();
+				return (freq + 1) / (tf + nd);
 			}
 		};
 	}
