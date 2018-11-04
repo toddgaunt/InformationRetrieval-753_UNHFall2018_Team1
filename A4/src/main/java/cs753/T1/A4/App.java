@@ -19,6 +19,8 @@ import org.apache.lucene.search.TopDocs;
 //import org.apache.lucene.search.similarities.BasicStats;
 //import org.apache.lucene.search.similarities.SimilarityBase;
 import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.search.similarities.BasicStats;
+import org.apache.lucene.search.similarities.LMSimilarity;
 import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -36,123 +38,68 @@ public class App
 	}
 
 	private static Similarity getU_L() {
-		return new TFIDFSimilarity() {
+		return new LMSimilarity() {
+
 			@Override
-			public float tf(float freq) {
-				return 1 + (float)Math.log10(freq);
+			public String getName() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 
 			@Override
-			public float idf(long docFreq, long docCount) {
-				if(docFreq == 0)
-					return 1;
-				else
-					return (float)Math.log10(docCount/docFreq);
-			}
-
-			@Override
-			public float lengthNorm(int length) {
-				return length;
-			}
-
-			@Override
-			public float sloppyFreq(int distance) {
-				return 0;
-			}
-
-			@Override
-			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+			protected float score(BasicStats stats, float freq, float docLen) {
+				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
 	}
 
 	private static Similarity getU_JM() {
-		return new TFIDFSimilarity() {
+		return new LMSimilarity() {
+
 			@Override
-			public float tf(float freq) {
-				if(freq > 0){
-					return 1;
-				} else {
-					return 0;
-				}
+			public String getName() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 
 			@Override
-			public float idf(long docFreq, long docCount) {
-				return docFreq;
-			}
-
-			@Override
-			public float lengthNorm(int length) {
-				return length; // TODO not sure how to implement
-			}
-
-			@Override
-			public float sloppyFreq(int distance) {
-				return 0;
-			}
-
-			@Override
-			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+			protected float score(BasicStats stats, float freq, float docLen) {
+				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
 	}
 
 	private static Similarity getU_DS() {
-		return new TFIDFSimilarity() {
+		return new LMSimilarity() {
+
 			@Override
-			public float tf(float freq) {
-				return 0.5f + (0.5f * freq / freq);
+			public String getName() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 
 			@Override
-			public float idf(long docFreq, long docCount) {
-				return docFreq;
-			}
-
-			@Override
-			public float lengthNorm(int length) {
-				return length; // TODO not sure how to implement
-			}
-
-			@Override
-			public float sloppyFreq(int distance) {
-				return 0;
-			}
-
-			@Override
-			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+			protected float score(BasicStats stats, float freq, float docLen) {
+				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
 	}
 	
 	private static Similarity getB_L() {
-		return new TFIDFSimilarity() {
+		return new LMSimilarity() {
+
 			@Override
-			public float tf(float freq) {
-				return 0.5f + (0.5f * freq / freq);
+			public String getName() {
+				// TODO Auto-generated method stub
+				return null;
 			}
 
 			@Override
-			public float idf(long docFreq, long docCount) {
-				return docFreq;
-			}
-
-			@Override
-			public float lengthNorm(int length) {
-				return length; // TODO not sure how to implement
-			}
-
-			@Override
-			public float sloppyFreq(int distance) {
-				return 0;
-			}
-
-			@Override
-			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+			protected float score(BasicStats stats, float freq, float docLen) {
+				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
@@ -204,7 +151,7 @@ public class App
 			} else if (methodName.equals("U-DS")) { 
 				method = getU_DS();
 			} else if (methodName.equals("B-L")) { 
-				method = getU_DS();
+				method = getB_L();
 			} else {
 				usage();
 			}
