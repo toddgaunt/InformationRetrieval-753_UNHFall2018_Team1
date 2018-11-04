@@ -1,4 +1,4 @@
-package cs753.T1.A3;
+package cs753.T1.A4;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,15 +9,15 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
+//import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.similarities.BasicStats;
-import org.apache.lucene.search.similarities.SimilarityBase;
+//import org.apache.lucene.search.similarities.BasicStats;
+//import org.apache.lucene.search.similarities.SimilarityBase;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
@@ -35,7 +35,7 @@ public class App
 		System.exit(-1);
 	}
 
-	private static TFIDFSimilarity getLncLtn() {
+	private static Similarity getU_L() {
 		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
@@ -67,7 +67,7 @@ public class App
 		};
 	}
 
-	private static TFIDFSimilarity getBnnBnnSim() {
+	private static Similarity getU_JM() {
 		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
@@ -100,10 +100,8 @@ public class App
 		};
 	}
 
-	private static TFIDFSimilarity getAncApcSim() {
+	private static Similarity getU_DS() {
 		return new TFIDFSimilarity() {
-			//public IndexReader ir;  <-- TODO Why is this here Todd? I commented it out.
-			
 			@Override
 			public float tf(float freq) {
 				return 0.5f + (0.5f * freq / freq);
@@ -130,8 +128,37 @@ public class App
 			}
 		};
 	}
+	
+	private static Similarity getB_L() {
+		return new TFIDFSimilarity() {
+			@Override
+			public float tf(float freq) {
+				return 0.5f + (0.5f * freq / freq);
+			}
 
-	public static String getQueryRFF(IndexSearcher is, String pageID, String query, TFIDFSimilarity method) throws Exception {
+			@Override
+			public float idf(long docFreq, long docCount) {
+				return docFreq;
+			}
+
+			@Override
+			public float lengthNorm(int length) {
+				return length; // TODO not sure how to implement
+			}
+
+			@Override
+			public float sloppyFreq(int distance) {
+				return 0;
+			}
+
+			@Override
+			public float scorePayload(int doc, int start, int end, BytesRef payload) {
+				return 0;
+			}
+		};
+	}
+	
+	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
 		int rank = 1;
 		String ret = "";
 
@@ -163,19 +190,21 @@ public class App
 			String dataFile;
 			String outlineFile;
 			String methodName;
-			TFIDFSimilarity method = null;
+			Similarity method = null;
 
 			if (args.length != 3)
 				usage();
 			dataFile = args[0];
 			outlineFile = args[1];
 			methodName = args[2];
-			if (methodName.equals("lnc.ltn")) {
-				method = getLncLtn();
-			} else if (methodName.equals("bnn.bnn")) {
-				method = getBnnBnnSim();
-			} else if (methodName.equals("anc.apc")) { 
-				method = getAncApcSim();
+			if (methodName.equals("U-L")) {
+				method = getU_L();
+			} else if (methodName.equals("U-JM")) {
+				method = getU_JM();
+			} else if (methodName.equals("U-DS")) { 
+				method = getU_DS();
+			} else if (methodName.equals("B-L")) { 
+				method = getU_DS();
 			} else {
 				usage();
 			}

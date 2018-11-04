@@ -2,7 +2,7 @@
 
 PARA := "fold-0-train.pages.cbor-paragraphs.cbor"
 OUTLINE := "train.pages.cbor-outlines.cbor"
-RETRIEVAL := "bnn.bnn"
+RETRIEVAL := "U-L"
 
 all:
 	mvn compile
@@ -15,4 +15,4 @@ clean:
 run: all
 	rm -f default.runfile custom.runfile
 	rm -rf index/
-	mvn exec:java -Dexec.mainClass="cs753.T1.A3.App" -Dexec.args="$(PARA) $(OUTLINE) $(RETRIEVAL)"
+	mvn exec:java -Dexec.mainClass="cs753.T1.A4.App" -Dexec.args="$(PARA) $(OUTLINE) $(RETRIEVAL)"
