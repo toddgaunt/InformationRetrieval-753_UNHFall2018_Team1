@@ -3,6 +3,7 @@ package cs753.T1.A4;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.lang.Math;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -28,7 +29,6 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import org.apache.lucene.util.BytesRef;
-
 public class App 
 {
 	public static void usage()
@@ -60,13 +60,16 @@ public class App
 			@Override
 			public String getName() {
 				// TODO Auto-generated method stub
-				return null;
+				return "U-JM";
 			}
 
 			@Override
 			protected float score(BasicStats stats, float freq, float docLen) {
 				// TODO Auto-generated method stub
-				return 0;
+				long lambda = (long) 0.9;
+				long tf = stats.getTotalTermFreq();
+				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
+				return (lambda * (freq/tf)) + ((1-lambda)*pt);
 			}
 		};
 	}
@@ -87,23 +90,7 @@ public class App
 			}
 		};
 	}
-	
-	private static Similarity getB_L() {
-		return new LMSimilarity() {
 
-			@Override
-			public String getName() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		};
-	}
 	
 	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
 		int rank = 1;
