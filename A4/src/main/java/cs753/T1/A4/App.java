@@ -79,14 +79,16 @@ public class App
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
-				return null;
+				return "U-DS";
 			}
 
 			@Override
 			protected float score(BasicStats stats, float freq, float docLen) {
-				// TODO Auto-generated method stub
-				return 0;
+				long µ = 1000;
+				long tf = stats.getTotalTermFreq();
+				long D = stats.getNumberOfDocuments();
+				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
+				return (D/(D+µ))*(tf/D) + (µ/(D+µ))*pt;
 			}
 		};
 	}
