@@ -4,15 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.lang.Math;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Fields;
 //import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
@@ -31,6 +37,8 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import org.apache.lucene.util.BytesRef;
 public class App 
 {
+	static long number_of_terms = 0;
+	
 	public static void usage()
 	{
 		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines METHOD=<lnc.ltn|bnn.bnn|anc.apc>");
@@ -48,8 +56,7 @@ public class App
 			@Override
 			protected float score(BasicStats stats, float freq, float docLen) {
 				long tf = stats.getTotalTermFreq();
-				long nd = stats.getNumberOfDocuments();
-				return (freq + 1) / (tf + nd);
+				return (freq + 1) / (tf + number_of_terms);
 			}
 		};
 	}
@@ -139,8 +146,6 @@ public class App
 				method = getU_JM();
 			} else if (methodName.equals("U-DS")) { 
 				method = getU_DS();
-			} else if (methodName.equals("B-L")) { 
-				method = getB_L();
 			} else {
 				usage();
 			}
@@ -161,8 +166,16 @@ public class App
 			iwriter.close();
 			fp_para.close();
 			/* Use the index */
-			IndexSearcher is = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("index").toPath())));
+			IndexReader ir = DirectoryReader.open(FSDirectory.open(new File("index").toPath()));
+			IndexSearcher is = new IndexSearcher(ir);
 
+			Set<String> s = new HashSet<String>();
+			for (int i = 0; i < ir.numDocs(); i++) {
+				for (IndexableField j: ir.document(i).getFields())
+				{
+				}
+			}
+			
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
