@@ -139,8 +139,6 @@ public class App
 				method = getU_JM();
 			} else if (methodName.equals("U-DS")) { 
 				method = getU_DS();
-			} else if (methodName.equals("B-L")) { 
-				method = getB_L();
 			} else {
 				usage();
 			}
