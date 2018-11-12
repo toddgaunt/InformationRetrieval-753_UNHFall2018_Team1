@@ -47,7 +47,6 @@ public class App
 
 	private static Similarity getU_L() {
 		return new LMSimilarity() {
-
 			@Override
 			public String getName() {
 				return "U-L";
@@ -173,8 +172,10 @@ public class App
 			for (int i = 0; i < ir.numDocs(); i++) {
 				for (IndexableField j: ir.document(i).getFields())
 				{
+					s.add(j.name());
 				}
 			}
+			number_of_terms = s.size();
 			
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outlineFile);
