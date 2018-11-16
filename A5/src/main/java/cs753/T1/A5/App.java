@@ -35,6 +35,7 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 import org.apache.lucene.util.BytesRef;
+
 public class App 
 {
 	static long number_of_terms = 0;
@@ -45,62 +46,6 @@ public class App
 		System.exit(-1);
 	}
 
-	private static Similarity getU_L() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				return "U-L";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				long tf = stats.getTotalTermFreq();
-				return (freq + 1) / (tf + number_of_terms);
-			}
-		};
-	}
-
-	private static Similarity getU_JM() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				// TODO Auto-generated method stub
-				return "U-JM";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				// TODO Auto-generated method stub
-				long lambda = (long) 0.9;
-				long tf = stats.getTotalTermFreq();
-				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
-				return (lambda * (freq/tf)) + ((1-lambda)*pt);
-			}
-		};
-	}
-
-	private static Similarity getU_DS() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				return "U-DS";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				long µ = 1000;
-				long tf = stats.getTotalTermFreq();
-				long D = stats.getNumberOfDocuments();
-				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
-				return (D/(D+µ))*(tf/D) + (µ/(D+µ))*pt;
-			}
-		};
-	}
-
-	
 	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
 		int rank = 1;
 		String ret = "";
@@ -140,12 +85,13 @@ public class App
 			dataFile = args[0];
 			outlineFile = args[1];
 			methodName = args[2];
+			LM lm = new LM();
 			if (methodName.equals("U-L")) {
-				method = getU_L();
+				method = lm.U_L(number_of_terms);
 			} else if (methodName.equals("U-JM")) {
-				method = getU_JM();
+				method = lm.U_JM();
 			} else if (methodName.equals("U-DS")) { 
-				method = getU_DS();
+				method = lm.U_DS();
 			} else {
 				usage();
 			}
