@@ -44,62 +44,6 @@ public class App
 		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines METHOD=<lnc.ltn|bnn.bnn|anc.apc>");
 		System.exit(-1);
 	}
-
-	private static Similarity getU_L() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				return "U-L";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				long tf = stats.getTotalTermFreq();
-				return (freq + 1) / (tf + number_of_terms);
-			}
-		};
-	}
-
-	private static Similarity getU_JM() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				// TODO Auto-generated method stub
-				return "U-JM";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				// TODO Auto-generated method stub
-				long lambda = (long) 0.9;
-				long tf = stats.getTotalTermFreq();
-				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
-				return (lambda * (freq/tf)) + ((1-lambda)*pt);
-			}
-		};
-	}
-
-	private static Similarity getU_DS() {
-		return new LMSimilarity() {
-
-			@Override
-			public String getName() {
-				return "U-DS";
-			}
-
-			@Override
-			protected float score(BasicStats stats, float freq, float docLen) {
-				long µ = 1000;
-				long tf = stats.getTotalTermFreq();
-				long D = stats.getNumberOfDocuments();
-				long pt = (long) (tf / (Math.log(stats.getNumberOfDocuments()) * Math.log(tf)));
-				return (D/(D+µ))*(tf/D) + (µ/(D+µ))*pt;
-			}
-		};
-	}
-
 	
 	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
 		int rank = 1;
@@ -131,24 +75,14 @@ public class App
 	{
 		try {
 			String dataFile;
-			String outlineFile;
+			String queryfile;
 			String methodName;
 			Similarity method = null;
 
 			if (args.length != 3)
 				usage();
 			dataFile = args[0];
-			outlineFile = args[1];
-			methodName = args[2];
-			if (methodName.equals("U-L")) {
-				method = getU_L();
-			} else if (methodName.equals("U-JM")) {
-				method = getU_JM();
-			} else if (methodName.equals("U-DS")) { 
-				method = getU_DS();
-			} else {
-				usage();
-			}
+			queryfile = args[1];
 
 			/* Setup the indexer */
 			Directory indexDir = FSDirectory.open(new File("index").toPath());
@@ -177,7 +111,7 @@ public class App
 			}
 			
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
-			FileInputStream fp_outline = new FileInputStream(outlineFile);
+			FileInputStream fp_outline = new FileInputStream(queryfile);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
 				outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
 			}
