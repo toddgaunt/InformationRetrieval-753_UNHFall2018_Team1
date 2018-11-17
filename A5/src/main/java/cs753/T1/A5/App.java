@@ -76,7 +76,6 @@ public class App
 		try {
 			String dataFile;
 			String outline;
-			String methodName;
 			Similarity method = null;
 
 			if (args.length != 3)
@@ -102,15 +101,8 @@ public class App
 			/* Use the index */
 			IndexReader ir = DirectoryReader.open(FSDirectory.open(new File("index").toPath()));
 			IndexSearcher is = new IndexSearcher(ir);
-
-			Set<String> s = new HashSet<String>();
-			for (int i = 0; i < ir.numDocs(); i++) {
-				for (IndexableField j: ir.document(i).getFields())
-				{
-				}
-			}
 			
-			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
+			PrintWriter outfile = new PrintWriter("out.runfile", "UTF-8");
 			FileInputStream fp_outline = new FileInputStream(outline);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
 				outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
