@@ -75,14 +75,14 @@ public class App
 	{
 		try {
 			String dataFile;
-			String queryfile;
+			String outline;
 			String methodName;
 			Similarity method = null;
 
 			if (args.length != 3)
 				usage();
 			dataFile = args[0];
-			queryfile = args[1];
+			outline = args[1];
 
 			/* Setup the indexer */
 			Directory indexDir = FSDirectory.open(new File("index").toPath());
@@ -111,7 +111,7 @@ public class App
 			}
 			
 			PrintWriter outfile = new PrintWriter(methodName + ".runfile", "UTF-8");
-			FileInputStream fp_outline = new FileInputStream(queryfile);
+			FileInputStream fp_outline = new FileInputStream(outline);
 			for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
 				outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
 			}
