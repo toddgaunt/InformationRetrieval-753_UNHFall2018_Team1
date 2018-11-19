@@ -8,7 +8,7 @@ public class LM {
 		return new LMSimilarity() {
 			@Override
 			public String getName() {
-				return "U-L";
+				return "LM-U";
 			}
 
 			@Override

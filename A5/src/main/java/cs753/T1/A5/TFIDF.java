@@ -4,7 +4,7 @@ import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.util.BytesRef;
 
 public class TFIDF {
-	public static TFIDFSimilarity BnnSim() {
+	public static TFIDFSimilarity BnnBnnSim() {
 		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
@@ -15,12 +15,12 @@ public class TFIDF {
 
 			@Override
 			public float idf(long docFreq, long docCount) {
-				return 1.0f;
+				return docFreq;
 			}
 
 			@Override
 			public float lengthNorm(int length) {
-				return 1.0f;
+				return length; // TODO not sure how to implement
 			}
 
 			@Override
@@ -36,7 +36,7 @@ public class TFIDF {
 		};
 	}
 	
-	public static TFIDFSimilarity LtnSim() {
+	public static TFIDFSimilarity LncLtnSim() {
 		return new TFIDFSimilarity() {
 			@Override
 			public float tf(float freq) {
@@ -52,7 +52,7 @@ public class TFIDF {
 
 			@Override
 			public float lengthNorm(int length) {
-				return 1.0f;
+				return length;
 			}
 
 			@Override
