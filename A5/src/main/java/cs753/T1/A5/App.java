@@ -3,6 +3,7 @@ package cs753.T1.A5;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -39,9 +40,10 @@ public class App
 		System.exit(-1);
 	}
 
-	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
-		int rank = 1;
-		String ret = "";
+	public static ArrayList<Rank> getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
+        int rank = 1;
+        String ret = "";
+	    ArrayList<Rank> ranks = new ArrayList<Rank>();
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
@@ -53,23 +55,17 @@ public class App
 		hits = results.scoreDocs;
 		for (ScoreDoc hit: hits) {
 			Document doc = is.doc(hit.doc);
-			ret += pageID;
-			ret += " Q0";
-			ret += " " + doc.get("id");
-			ret += " " + rank;
-			ret += " " + hit.score;
-			ret += " team1-default";
-			ret += "\n";
-			rank += 1;
+			ranks.add(new Rank(doc.get("id"), 0));
 		}
-		return ret;
+		return ranks;
 	}
 
 	
 	public static void question2(String[] args) throws Exception {
 		String dataFile;
 		String outline;
-		Similarity method = null;
+		String methods[] = new String[]{"lnc.ltn", "bnn.bnn", "LM-U", "U-JM", "U-DS"};
+		ArrayList<ArrayList<Rank>> listOfRanks = new ArrayList<ArrayList<Rank>>();
 
 		if (args.length != 3)
 			usage();
