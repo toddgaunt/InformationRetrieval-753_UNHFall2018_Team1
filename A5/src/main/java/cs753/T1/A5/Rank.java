@@ -35,7 +35,7 @@ public class Rank {
 				Float rank = 0.0f;
 				if (null != entry.rank[i])
 					rank = entry.rank[i];
-				rankLibFmt += " " + i + ":" + rank;
+				rankLibFmt += " " + (i + 1) + ":" + rank;
 			}
 			rankLibFmt += " # " + entry.id + "\n";
 		}
