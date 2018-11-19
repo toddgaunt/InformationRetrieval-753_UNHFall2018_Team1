@@ -1,8 +1,8 @@
 # This is simply a wrapper around mvn to aid muscle memory for make commands
 
+QUESTION := "Q1"
 PARA := "fold-0-train.pages.cbor-paragraphs.cbor"
 OUTLINE := "train.pages.cbor-outlines.cbor"
-RETRIEVAL := "U-L"
 
 all:
 	mvn compile
