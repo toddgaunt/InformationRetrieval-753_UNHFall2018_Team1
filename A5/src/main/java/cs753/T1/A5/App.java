@@ -66,7 +66,6 @@ public class App
 	
 	public static void main(String[] args)
 	{
-		
 		Integer qid = 1;
 		Rank D1 = new Rank("D1", 0);
 		Rank D2 = new Rank("D2", 1);

@@ -21,7 +21,7 @@ public class Rank {
 					featureVectors.put(rankList[i][j].id, new FeatureVector(rankList[i][j].id, rankList.length));
 					tmp = featureVectors.get(rankList[i][j].id);
 				}
-				tmp.rank[i] = (1.0f + 1.0f)/((float)(j + 1));
+				tmp.rank[i] = 1.0f/((float)(j + 1));
 				tmp.relevance = rankList[i][j].relevance;
 			}
 		}
