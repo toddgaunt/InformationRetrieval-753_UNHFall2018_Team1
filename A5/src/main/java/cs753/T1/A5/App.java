@@ -28,6 +28,7 @@ import org.apache.lucene.store.FSDirectory;
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
 
+
 public class App 
 {
 	static long number_of_terms = 0;
@@ -37,7 +38,7 @@ public class App
 		System.out.println("usage: make run QUESTION=<Q1|Q2> PARA=path/to/paragraphs OUTLINE=path/to/outlines");
 		System.exit(-1);
 	}
-	
+
 	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
 		int rank = 1;
 		String ret = "";
