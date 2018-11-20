@@ -3,18 +3,15 @@ package cs753.T1.A5;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.*;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.*;
 //import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
@@ -35,13 +32,13 @@ public class App
 	
 	public static void usage()
 	{
-		System.out.println("usage: make run QUESTION=<Q1|Q2> PARA=path/to/paragraphs OUTLINE=path/to/outlines");
+		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines");
 		System.exit(-1);
 	}
 
-	public static String getQueryRFF(IndexSearcher is, String pageID, String query, Similarity method) throws Exception {
-		int rank = 1;
-		String ret = "";
+	public static Rank[] getQueryRFF(IndexSearcher is, String query, Similarity method) throws Exception {
+        int rank = 0;
+	    ArrayList<Rank> ranks = new ArrayList<Rank>();
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
@@ -49,29 +46,27 @@ public class App
 
 		is.setSimilarity(method);
 
-		results = is.search(parser.parse(query), 100);
+		results = is.search(parser.parse(query), 10);
 		hits = results.scoreDocs;
 		for (ScoreDoc hit: hits) {
-			Document doc = is.doc(hit.doc);
-			ret += pageID;
-			ret += " Q0";
-			ret += " " + doc.get("id");
-			ret += " " + rank;
-			ret += " " + hit.score;
-			ret += " team1-default";
-			ret += "\n";
-			rank += 1;
-		}
-		return ret;
+            Document doc = is.doc(hit.doc);
+            ranks.add(new Rank(doc.get("id"), 0));
+        }
+
+        Rank[] ranks_ret = new Rank[ranks.size()];
+		return ranks.toArray(ranks_ret);
 	}
 
 	
 	public static void question2(String[] args) throws Exception {
-		String dataFile;
-		String outline;
-		Similarity method = null;
+	    String dataFile;
+        String outline;
+        int queryID = 0;
+		Rank[][] listOfRanks = new Rank[5][];
+        TFIDF tfidf = new TFIDF();
+        LM lm = new LM();
 
-		if (args.length != 3)
+		if (args.length != 2)
 			usage();
 		dataFile = args[0];
 		outline = args[1];
@@ -94,14 +89,30 @@ public class App
 		/* Use the index */
 		IndexReader ir = DirectoryReader.open(FSDirectory.open(new File("index").toPath()));
 		IndexSearcher is = new IndexSearcher(ir);
-		
-		PrintWriter outfile = new PrintWriter("out.runfile", "UTF-8");
-		FileInputStream fp_outline = new FileInputStream(outline);
-		for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
-			outfile.print(getQueryRFF(is, page.getPageId(), "text: " + page.getPageName(), method));
-		}
-		fp_outline.close();
-		outfile.close();
+
+        Set<String> s = new HashSet<String>();
+        for (int i = 0; i < ir.numDocs(); i++) {
+            for (IndexableField j: ir.document(i).getFields())
+            {
+                s.add(j.name());
+            }
+        }
+        number_of_terms = s.size();
+
+
+        PrintWriter outfile = new PrintWriter("out.runfile", "UTF-8");
+        FileInputStream fp_outline = new FileInputStream(outline);
+        for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
+            listOfRanks[0] = getQueryRFF(is, "text: " + page.getPageName(), tfidf.LncLtnSim());
+            listOfRanks[1] = getQueryRFF(is, "text: " + page.getPageName(), tfidf.BnnBnnSim());
+            listOfRanks[2] = getQueryRFF(is, "text: " + page.getPageName(), lm.U_L(number_of_terms));
+            listOfRanks[3] = getQueryRFF(is, "text: " + page.getPageName(), lm.U_JM());
+            listOfRanks[4] = getQueryRFF(is, "text: " + page.getPageName(), lm.U_DS());
+            outfile.print(Rank.rankLibFmtFromRanklist(queryID, listOfRanks));
+            queryID+=1;
+        }
+        fp_outline.close();
+        outfile.close();
 	}
 	
 	public static void main(String[] args)
