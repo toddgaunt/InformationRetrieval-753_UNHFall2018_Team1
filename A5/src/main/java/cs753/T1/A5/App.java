@@ -3,10 +3,7 @@ package cs753.T1.A5;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -35,7 +32,7 @@ public class App
 	
 	public static void usage()
 	{
-		System.out.println("usage: make run QUESTION=<Q1|Q2> PARA=path/to/paragraphs OUTLINE=path/to/outlines");
+		System.out.println("usage: make run PARA=path/to/paragraphs OUTLINE=path/to/outlines");
 		System.exit(-1);
 	}
 
@@ -46,7 +43,6 @@ public class App
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
 		ScoreDoc[] hits;
-
 
 		is.setSimilarity(method);
 
@@ -69,7 +65,7 @@ public class App
         TFIDF tfidf = new TFIDF();
         LM lm = new LM();
 
-		if (args.length != 3)
+		if (args.length != 2)
 			usage();
 		dataFile = args[0];
 		outline = args[1];
