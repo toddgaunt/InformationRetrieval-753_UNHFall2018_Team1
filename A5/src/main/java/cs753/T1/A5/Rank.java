@@ -30,7 +30,7 @@ public class Rank {
 		String rankLibFmt = "";
 		for (FeatureVector entry : featureVectors.values()) {
 			rankLibFmt += entry.relevance;  // Relevance
-			rankLibFmt += " " + queryId;
+			rankLibFmt += " qid:" + queryId;
 			for (i = 0; i < entry.rank.length; ++i) {
 				Float rank = 0.0f;
 				if (null != entry.rank[i])
