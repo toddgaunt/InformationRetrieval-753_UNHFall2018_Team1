@@ -38,7 +38,7 @@ public class App
 
 	public static Rank[] getQueryRFF(IndexSearcher is, String query, Similarity method) throws Exception {
         int rank = 0;
-	    Rank[] ranks = new Rank[10];
+	    ArrayList<Rank> ranks = new ArrayList<Rank>();
 
 		QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 		TopDocs results;
@@ -49,11 +49,12 @@ public class App
 		results = is.search(parser.parse(query), 10);
 		hits = results.scoreDocs;
 		for (ScoreDoc hit: hits) {
-			Document doc = is.doc(hit.doc);
-			ranks[rank] = new Rank(doc.get("id"), 0);
-			rank +=1;
-		}
-		return ranks;
+            Document doc = is.doc(hit.doc);
+            ranks.add(new Rank(doc.get("id"), 0));
+        }
+
+        Rank[] ranks_ret = new Rank[ranks.size()];
+		return ranks.toArray(ranks_ret);
 	}
 
 	
@@ -61,7 +62,7 @@ public class App
 	    String dataFile;
         String outline;
         int queryID = 0;
-		Rank[][] listOfRanks = new Rank[5][10];
+		Rank[][] listOfRanks = new Rank[5][];
         TFIDF tfidf = new TFIDF();
         LM lm = new LM();
 
