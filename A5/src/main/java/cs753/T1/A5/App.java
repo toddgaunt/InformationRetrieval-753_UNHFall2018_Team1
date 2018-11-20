@@ -100,7 +100,7 @@ public class App
         number_of_terms = s.size();
 
 
-        PrintWriter outfile = new PrintWriter("out.runfile", "UTF-8");
+        PrintWriter outfile = new PrintWriter("rankLibQ2.train", "UTF-8");
         FileInputStream fp_outline = new FileInputStream(outline);
         for (Data.Page page : DeserializeData.iterableAnnotations(fp_outline)) {
             listOfRanks[0] = getQueryRFF(is, "text: " + page.getPageName(), tfidf.LncLtnSim());
